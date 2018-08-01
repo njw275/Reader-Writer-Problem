@@ -1,0 +1,24 @@
+README
+
+Lab 3 - Reader/Writer (Consumer/Producer) Problem
+Nick White - 11/27/17
+
+To Run:
+First, call ./createMem (This creates the shared mem seg. and the three named semaphores)
+
+Next, use either:
+./reader -l *lower bound to start read* -u *upper bound* -d *sleep time* -s *shared mem seg ID from output of ./createMem*
+./writer -l *lower bound to start write* -u *upper bound* -d *sleep time* -s *shared mem seg ID from output of ./createMem*
+
+The shared memory created has an array size of 20 (So you can read/write -l 0 -u 20) and mem[21] is the readCount variable 
+
+Finally, once you have ran all the readers and writers you want to use. Press a key for ./createMem to release the memory and unlink and destroy the semaphores used by the reader and writer. 
+
+How is the solution starvation free?
+
+I used three semaphores to solve the starvation and mutex problem. First, I have orderSem which is a semaphore to know what order the workers entered (Whether a reader or writer). This helps from starvation to know if, for example, a reader must wait until after a writer even though there is a reader that is reading currently.
+
+Next, I have a mutexSem which just makes sure no two writers/one reader and one writer are both in their Critial Sections at the same time. 
+
+Finally, I have a readCountMutex which protects the readCount from being modified. It can only be modified if the reader is going to read, not if it arrived and is waiting in line to perform its action.
+
